@@ -4,11 +4,11 @@
 #imports
 import pigpio
 import time
-
+from threading import Thread
 
 #-----Vars-----
 stall_list = [
-    {'name':1 ,'user': '', 'status': False, 'bar_out': 2, 'bar_in': 6, 'cable_out': 27, 'cable_in': 22, }
+    {'name':1 ,'user': '', 'status': False, 'bar_out': 2, 'bar_in': 6, 'cable_out': 4, 'cable_in': 22, }
 ]
 #this is a dict of all of the possible stalls. the value for each key is the pinout for the rpi 
 
@@ -20,7 +20,8 @@ email = ''
 user_pass = ''
 users = {}
 
-'''#library setup
+
+#library setup
 pi = pigpio.pi()
 
 #setting modes of pins
@@ -29,7 +30,7 @@ pi.set_mode(stall_list[0].get('cable_in'), pigpio.INPUT)
 pi.set_mode(stall_list[0].get('cable_out'), pigpio.OUTPUT)
 pi.set_mode(stall_list[0].get('bar_out'), pigpio.OUTPUT)
 pi.set_mode(stall_list[0].get('bar_in'), pigpio.INPUT)
-'''
+
 
 #------- functions --------------------------
 #$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
@@ -130,8 +131,11 @@ def unlock(pin, stall): #spins a servo to unlock it
 def lock(pin, stall):
     max_servo= 2500
     pi.set_servo_pulsewidth(pin, max_servo)
-    pi.set_servo_pulsewidth(pin, 0)#stops the servo 
+    time.sleep(1)
     stall['status'] = True
+
+def stop(pin):
+    pi.set_servo_pulsewidth(pin, 0)
     time.sleep(1)
 
 #}
@@ -140,7 +144,8 @@ def lock(pin, stall):
 #main code-------------------------------------------------------------------------------------------------------------------------------------------------
 #$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
-#take a user input 
+#take a user input
+
 email, user_pass = user_info(email, user_pass)  
 email_check, pin_check = user_setup_check(email, user_pass)
 
@@ -161,36 +166,24 @@ print('User created: ' + email)
 #assign a stall 
 for Stall in stall_list:
     if Stall.get('status') == False:
+        
+        
+        unlock(Stall.get('bar_out'), Stall)
+        unlock(Stall.get('cable_out'), Stall)
         print('Please proceede to stall #' + str(Stall.get('name')))
-        #unlock(Stall.get('bar_out'), Stall)
-        #unlock(Stall.get('cable_out'), Stall)
-        time.sleep(1)
-        #lock(Stall.get('bar_out'), Stall)
-        #lock(Stall.get('cable_out'), Stall)
-        time.sleep(1)
+        
+        lock(Stall.get('bar_out'), Stall)
+        lock(Stall.get('cable_out'), Stall)
+        
+       
+        stop(Stall.get('bar_out'))
+        stop(Stall.get('cable_out'))
+             
         Stall['status'] = True
         Stall['user'] = email
+        
 
-
-
-
-#unlocking 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#reading the values
 
 
 

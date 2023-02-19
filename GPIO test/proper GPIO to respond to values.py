@@ -2,10 +2,10 @@
 import pigpio 
 import os 
 import time 
-os.system('sudo pigpio')# starts pigpio 
+
 
 #vars
-main_pin = 4
+main_pin = 6
 
 
 
