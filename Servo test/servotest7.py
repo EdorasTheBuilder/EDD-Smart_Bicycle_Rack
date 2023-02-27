@@ -7,9 +7,9 @@ pi = pigpio.pi()
 pi.set_mode(pin, pigpio.OUTPUT)
 
 
-print ("mode: ", pi.get_mode(pin))
+fprint ("mode: ", pi.get_mode(pin))
 
-def unlock(pin): #spins a servo to unlock it 
+def unlock(pin, stall): #spins a servo to unlock it 
     min_servo = 500 #servo position as vars so it's easy to tune
     time.sleep(1)
     pi.set_servo_pulsewidth(pin, min_servo)
@@ -18,12 +18,12 @@ def unlock(pin): #spins a servo to unlock it
     time.sleep(1)
     stall['status'] = False
 
-def lock(pin):
+def lock(pin, stall ):
     max_servo= 2500
     time.sleep(1)
     pi.set_servo_pulsewidth(pin, max_servo)
     time.sleep(1)
-    pi.set_servo_pulsewidth(pin, 0) #stops teh servo 
+    pi.set_servo_pulsewidth(pin, 0) #stops the servo 
     time.sleep(1)
     stall['status'] = True
 
@@ -44,9 +44,9 @@ def rack_read(stall_list):
         return True
 
 for i in range(100):
-    unlock(pin)
+    unlock(pin, {})
     #time.sleep(1)
-    lock(pin)
+    lock(pin, {})
     
 
 

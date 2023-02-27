@@ -9,7 +9,7 @@ global user_pass
 global users 
 
 stall_list = [
-    {'name':1 ,'user': '', 'status': False, 'bar_out': 2, 'bar_in': 14, 'cable_out':19, 'cable_in': 26m  , }
+    {'name':1 ,'user': '', 'status': False, 'bar_out': 2, 'bar_in': 20,  'cable_in': 21, }
 ]
 #this is a dict of all of the possible stalls. the value for each key is the pinout for the rpi 
 #status is weather or not the stall is locked 
@@ -30,7 +30,6 @@ pi = pigpio.pi()
 #setting modes of pins
 for Stall in stall_list:
     pi.set_mode(Stall.get('cable_in'), pigpio.INPUT)
-    pi.set_mode(Stall.get('cable_out'), pigpio.OUTPUT)
     pi.set_mode(Stall.get('bar_out'), pigpio.OUTPUT)
     pi.set_mode(Stall.get('bar_in'), pigpio.INPUT)
     

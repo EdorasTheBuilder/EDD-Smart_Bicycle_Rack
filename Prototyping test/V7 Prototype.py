@@ -13,7 +13,7 @@ global user_pass
 global users 
 
 stall_list = [
-    {'name':1 ,'user': '', 'status': False, 'bar_out': 2, 'bar_in': 3, 'cable_out':20, 'cable_in': 21, }
+    {'name':1 ,'user': '', 'status': False, 'bar_out': 2, 'bar_in': 3,  'cable_in': 21, }
 ]
 #this is a dict of all of the possible stalls. the value for each key is the pinout for the rpi 
 #status is weather or not the stall is locked 
@@ -57,10 +57,9 @@ def unlock(pin, stall): #spins a servo to unlock it
 
 def lock(pin, stall):
     max_servo= 2500
-    time.sleep(1)
-    pi.set_servo_pulsewidth(pin, max_servo)
-    time.sleep(1)
-    pi.set_servo_pulsewidth(pin, 0) #stops teh servo 
+    time.sleep(1) 
+    time.sleep(1) #waits program to so servo has time to move 
+    pi.set_servo_pulsewidth(pin, 0) #stops the servo 
     time.sleep(1)
     stall['status'] = True
 
@@ -212,12 +211,11 @@ def start(users, stall_list, email, user_pin):
                 
                 
                 unlock(Stall.get('bar_out'), Stall)
-                unlock(Stall.get('cable_out'), Stall)
+                
                 print('Please proceede to stall #' + str(Stall.get('name')))
                 
-       
                 lock(Stall.get('bar_out'), Stall)
-                lock(Stall.get('cable_out'), Stall)
+                
                 
        
         
@@ -237,12 +235,12 @@ def start(users, stall_list, email, user_pin):
                 
                 if stall.get('user') == email:
                     unlock(stall.get('bar_out'), stall)
-                    unlock(stall.get('cable_out'), stall)
+                
                     
                     time.sleep(2)
                     
                     lock(stall.get('bar_out'), stall)
-                    lock(stall.get('cable_out'), stall)
+                 
     
                     
 
