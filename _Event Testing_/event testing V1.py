@@ -1,10 +1,17 @@
+#https://realpython.com/intro-to-python-threading/
+
 from threading import Thread
 import time
+import random
 
+
+global thread_running
 thread_running = True
 
+
+
 def my_forever_while():
-    global thread_running
+    
     start_time = time.time()
 
     # run this while there is no input
@@ -12,23 +19,24 @@ def my_forever_while():
         time.sleep(0.1)
         
         if time.time() - start_time >= 5:
-            start_time = time.time()
-            print('Another 5 seconds has passed')   
+            start_time = time.time() 
+            print(random.randint(0,1))
+            print('Another 5 seconds has passed')  
+             
 
 
 def take_input():
-    user_input = input('Type user input: ')
+    h = input('hello')
     # doing something with the input
-    print('The user input is: ', user_input)
-
+    print(h)
+    thread_running = False
 
 if __name__ == '__main__':
     t1 = Thread(target=my_forever_while)
     t2 = Thread(target=take_input)
 
+    
     t1.start()
     t2.start()
 
-    t2.join()  # interpreter will wait until your process get completed or terminated
-    thread_running = False
-    print('The end')
+    

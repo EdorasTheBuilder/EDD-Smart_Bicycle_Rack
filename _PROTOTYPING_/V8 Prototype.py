@@ -4,7 +4,7 @@
 #imports
 import pigpio
 import time
-from threading import Thread
+import threading as Thread
 
 #-----Vars-----
 global stall_list
