@@ -1,4 +1,5 @@
 def check(value):
+    print('1')
     if value == True: 
         return True
     else: 
@@ -15,3 +16,4 @@ while True:
     user_input = input("Enter something: ")
     if user_input == "quit":
         break
+    check(True)

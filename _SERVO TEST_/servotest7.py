@@ -7,7 +7,7 @@ pi = pigpio.pi()
 pi.set_mode(pin, pigpio.OUTPUT)
 
 
-fprint ("mode: ", pi.get_mode(pin))
+print ("mode: ", pi.get_mode(pin))
 
 def unlock(pin, stall): #spins a servo to unlock it 
     min_servo = 500 #servo position as vars so it's easy to tune

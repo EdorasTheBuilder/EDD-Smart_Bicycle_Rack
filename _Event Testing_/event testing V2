@@ -4,18 +4,18 @@ import asyncio
 import time
 
 def hello_world(loop):
-   while True:
-    print('Hello World')
-    time.sleep(2)
+   print('Hello World')
+   time.sleep(2)
 
 def user_input(loop):
    print(input('What is your name'))
 
 loop = asyncio.get_event_loop()
 
-loop.call_soon(user_input, loop)
-loop.call_soon(hello_world, loop)
+while True:
+   loop.call_soon(user_input, loop)
+   loop.call_soon(hello_world, loop)
 
 
-loop.run_forever()
+   loop.run_forever()
 #loop.close()

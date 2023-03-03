@@ -1,0 +1,34 @@
+from threading import Thread
+from random import randint
+
+
+
+global status
+status = True
+
+class myClassA(Thread):
+    def __init__(self):
+        Thread.__init__(self)
+        self.daemon = True
+        self.start()
+    def run(self):
+        print(input('hello'))
+
+class myClassB(Thread):
+    def __init__(self):
+        Thread.__init__(self)
+        self.daemon = True
+        self.start()
+    def run(self):
+        while True:
+            if randint(0,100) == 0:
+                status = False
+            else: status = True
+        
+
+
+myClassA()
+myClassB()
+
+while True: 
+    pass
