@@ -290,7 +290,7 @@ def main_thread():
 
 
 def take_input():
-    while True: 
+    while True: #hopefully this shit works. 
         start(users, stall_list, email, user_pin) 
         # doing something with the input
         #print('The user input is: ', user_input)
