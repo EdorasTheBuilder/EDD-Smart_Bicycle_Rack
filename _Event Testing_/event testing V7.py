@@ -14,8 +14,7 @@ if __name__ == '__main__':
     queue = Queue()
     p = Process(target=f, args=(queue, check))
     p.start()
-    print(queue.get())    #prints "[42, None, 'hello']"
+    print(queue.get())    # prints "[42, None, 'hello']"
     time.sleep(1)
-    p.terminate()
+    #p.terminate() 
 
-   

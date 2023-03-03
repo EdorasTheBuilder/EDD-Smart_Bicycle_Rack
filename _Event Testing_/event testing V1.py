@@ -26,10 +26,11 @@ def my_forever_while():
 
 
 def take_input():
-    h = input('hello')
-    # doing something with the input
-    print(h)
-    thread_running = False
+    while True:
+        h = input('hello')
+        # doing something with the input
+        print(h)
+        #thread_running = False
 
 if __name__ == '__main__':
     t1 = Thread(target=my_forever_while)
