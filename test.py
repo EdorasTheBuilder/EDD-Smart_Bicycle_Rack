@@ -1,17 +1,2 @@
-def check(value):
-    if value == True: 
-        return True
-    else: 
-        return False
-
-
-
-while True:
-    # Check for your condition
-    if check(True):
-        print("The condition is true!")
-    
-    # Check for user input
-    user_input = input("Enter something: ")
-    if user_input == "quit":
-        break
+import os
+os.system("sudo pigpiod")
