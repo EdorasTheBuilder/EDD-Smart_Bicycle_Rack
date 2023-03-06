@@ -4,7 +4,7 @@
 #imports
 import pigpio
 import time
-import threading as Thread
+from threading import Thread
 
 #-----Vars-----
 global stall_list
@@ -268,7 +268,7 @@ def start(users, stall_list, email, user_pin):
 
 #take a user input
 
-start(users, stall_list, email, user_pin) 
+#start(users, stall_list, email, user_pin) 
 
 
 thread_running = True
@@ -279,26 +279,27 @@ def main_thread():
 
     # run this while there is no input
     while thread_running:
-        time.sleep(0.1)
+        time.sleep(0.5)
         
-        if time.time() - start_time >= 1:
+        if time.time() - start_time >= 5:
             start_time = time.time()
             
             for stall in stall_list:
                 if stall.get('assigned')== True: 
-                    rack_read(stall)
-
+                    print(rack_read(stall))
+                 
 
 def take_input():
-    while True: #hopefully this shit works. 
-        start(users, stall_list, email, user_pin) 
+    while thread_running == True: #hopefully this shit works. 
+        start(users, stall_list, email, user_pin)
+        time.sleep(1)
         # doing something with the input
         #print('The user input is: ', user_input)
 
 
 if __name__ == '__main__':
-    t1 = Thread(target=main_thread)
-    t2 = Thread(target=take_input)
+    t1 = Thread(target=take_input)
+    t2 = Thread(target=main_thread)
 
     t1.start()
     t2.start()
