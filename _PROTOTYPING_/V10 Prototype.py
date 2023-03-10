@@ -5,6 +5,7 @@
 import pigpio
 import time
 from threading import Thread
+import os
 
 #-----Vars-----
 global stall_list
@@ -269,13 +270,6 @@ def start(users, stall_list, email, user_pin):
                  
 
 
-
-
-
-
-
-
-    
 #main code-------------------------------------------------------------------------------------------------------------------------------------------------
 #$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
@@ -307,6 +301,7 @@ def main_thread():
 def take_input():
     while thread_running == True: #hopefully this shit works. 
         start(users, stall_list, email, user_pin)
+        os.system('clear')
         time.sleep(1)
         # doing something with the input
         #print('The user input is: ', user_input)
