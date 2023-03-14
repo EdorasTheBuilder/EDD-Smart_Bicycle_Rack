@@ -1,0 +1,61 @@
+import os
+from google.oauth2.credentials import Credentials
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
+from google.auth.transport.requests import Request
+from google.oauth2 import service_account
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.mime.image import MIMEImage
+import base64
+
+# Replace with the email address you want to send the email to
+TO_EMAIL = 'robhatta@gmail.com'
+
+# Replace with the subject line for your email
+SUBJECT = 'Hello from Smart Bike Rack Edd!'
+
+# Replace with the body of your email
+BODY = 'This is a test email sent from the Smart Bike Rack Edd.'
+
+# Replace with the path to your service account key JSON file
+SERVICE_ACCOUNT_FILE = "/Users/Edoras/OneDrive/School/12th_grade/EDD/EDD-Smart_Bicycle_Rack/_EMAIL_TESTING_/credentials.json"
+
+# Replace with the ID of the Gmail API project in the Google Cloud Console
+PROJECT_ID = "edd-engineering"
+
+# Replace with the email address you want to send the email from
+FROM_EMAIL = 'smart.bike.rack.edd@gmail.com'
+
+# Authenticate with the Google Workspace API using a service account
+credentials = service_account.Credentials.from_service_account_file(
+    SERVICE_ACCOUNT_FILE,
+    scopes=['https://www.googleapis.com/auth/gmail.compose']
+)
+
+# Build the Gmail API client
+gmail_service = build('gmail', 'v1', credentials=credentials)
+
+# Create the message object
+message = MIMEMultipart()
+message['to'] = TO_EMAIL
+message['subject'] = SUBJECT
+
+# Add the body of the email to the message
+message.attach(MIMEText(BODY))
+
+
+
+# Convert the message to a raw string that can be sent over the Gmail API
+raw_message = base64.urlsafe_b64encode(message.as_bytes()).decode()
+
+# Send the email using the Gmail API
+try:
+    message = gmail_service.users().messages().send(
+        userId=FROM_EMAIL,
+        body={'raw': raw_message}
+    ).execute()
+    print('Message Id: %s' % message['id'])
+except HttpError as error:
+    print('An error occurred: %s' % error)
+    message = None
