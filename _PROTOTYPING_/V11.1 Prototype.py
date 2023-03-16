@@ -48,22 +48,39 @@ for stall in stall_list:
 
 #functions for servo control {
 
+def find_index(stall):  #finds the index of the stall dictionary in the stall list, used later to figure out weather or not stall is assigned to a user
+    count = 0 
+    for i in stall_list:
+        if i == stall: 
+            return count
+        else:
+            count += 1 
+    
+
+
+
 def unlock(stall): #spins a servo to unlock it 
     pin = stall.get('bar_out')
 
-
     min_servo = 500 #servo position as vars so it's easy to tune
+
+    
     time.sleep(1)
     pi.set_servo_pulsewidth(pin, min_servo)
     time.sleep(1)
     pi.set_servo_pulsewidth(pin, 0)#stops the servo 
     time.sleep(1)
-    stall['assigned'] = False
+
+    
+    
+    stall_list[find_index(stall)]['assigned'] = False #changes the value in the dictionary, stall is not assigned to a user
+   
 
 def lock(stall):
     pin = stall.get('bar_out')
     switch = pi.read(stall.get('limit')) # reads value of limit switch
     complete = False
+    switch = 1
 
     
     
@@ -74,11 +91,13 @@ def lock(stall):
             time.sleep(1)
             pi.set_servo_pulsewidth(pin, 0) #stops the servo 
             time.sleep(1)
-            stall['status'] = True
+            
             
             complete = True
         else: 
            switch = pi.read(stall.get('limit'))
+    
+    stall_list[find_index(stall)]['assigned'] = True #changes the value in the dictionary, stall is  assigned to a user
 
 
 #functions for reading servo values 
@@ -277,7 +296,7 @@ def start(users, stall_list, email, user_pin):
                     
                     time.sleep(2)
                     
-                    lock(stall) 
+                    
     else:
         print("Error! Are you sure you typed your answer correctly?")
                  
