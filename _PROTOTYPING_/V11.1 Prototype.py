@@ -5,6 +5,7 @@
 import pigpio
 import time
 from threading import Thread
+import os
 
 #-----Vars-----
 global stall_list
@@ -13,7 +14,7 @@ global user_pass
 global users 
 
 stall_list = [
-    {'name':1 ,'user': '', 'assigned': False, 'bar_out': 2, 'bar_in': 20,  'cable_in': 21, }
+    {'name':1 ,'user': '', 'assigned': False, 'bar_out': 2, 'bar_in': 20,  'cable_in': 21, 'switch': 26}
 ]
 #this is a dict of all of the possible stalls. the value for each key is the pinout for the rpi 
 #assigned is weather or not the stall is locked 
@@ -32,11 +33,12 @@ users = {}
 pi = pigpio.pi()
 
 #setting modes of pins
-for Stall in stall_list: 
+for stall in stall_list: 
     pass
-    pi.set_mode(Stall.get('cable_in'), pigpio.INPUT)
-    pi.set_mode(Stall.get('bar_out'), pigpio.OUTPUT)
-    pi.set_mode(Stall.get('bar_in'), pigpio.INPUT)
+    pi.set_mode(stall.get('cable_in'), pigpio.INPUT)
+    pi.set_mode(stall.get('bar_out'), pigpio.OUTPUT)
+    pi.set_mode(stall.get('bar_in'), pigpio.INPUT)
+    pi.set_mode(stall.get('switch'), pigpio.INPUT)
 
 
 #------- functions --------------------------
@@ -46,7 +48,10 @@ for Stall in stall_list:
 
 #functions for servo control {
 
-def unlock(pin, stall): #spins a servo to unlock it 
+def unlock(stall): #spins a servo to unlock it 
+    pin = stall.get('bar_out')
+
+
     min_servo = 500 #servo position as vars so it's easy to tune
     time.sleep(1)
     pi.set_servo_pulsewidth(pin, min_servo)
@@ -55,10 +60,12 @@ def unlock(pin, stall): #spins a servo to unlock it
     time.sleep(1)
     stall['assigned'] = False
 
-def lock(pin, stall ):
-    switch = pi.read(Stall.get('limit')) # reads value of limit switch
+def lock(stall):
+    pin = stall.get('bar_out')
+    switch = pi.read(stall.get('limit')) # reads value of limit switch
     complete = False
-    print(switch)
+
+    
     
     while complete == False: #checks if locking is complete 
         if switch == 1:
@@ -71,7 +78,7 @@ def lock(pin, stall ):
             
             complete = True
         else: 
-           switch = pi.read(Stall.get('limit'))
+           switch = pi.read(stall.get('limit'))
 
 
 #functions for reading servo values 
@@ -104,7 +111,7 @@ def rack_read(stall):
         return secure
 
 
-    #determines weather or not to return read_lst
+
     return secure
     
 
@@ -233,16 +240,16 @@ def start(users, stall_list, email, user_pin):
         count = 0
         assigned = False
         
-        for Stall in stall_list:
-            if Stall.get('assigned') == False:
+        for stall in stall_list:
+            if stall.get('assigned') == False:
                 
-                unlock(Stall.get('bar_out'), Stall)
+                unlock(stall)
                 
-                print('Please proceede to stall #' + str(Stall.get('name')))
+                print('Please proceede to stall #' + str(stall.get('name')))
                 
-                lock(Stall.get('bar_out'), Stall)
+                lock(stall)
                 
-                Stall['user'] = email
+                stall['user'] = email
                 
                 assigned = True
             
@@ -265,12 +272,12 @@ def start(users, stall_list, email, user_pin):
             for stall in stall_list:
                 
                 if stall.get('user') == email:
-                    unlock(stall.get('bar_out'), stall)
+                    unlock(stall)
                 
                     
                     time.sleep(2)
                     
-                    lock(stall.get('bar_out'), stall)
+                    lock(stall) 
     else:
         print("Error! Are you sure you typed your answer correctly?")
                  
@@ -312,11 +319,12 @@ def main_thread():
                  
 
 def take_input():
-    while thread_running == True: #hopefully this shit works. 
+    while thread_running == True: 
         start(users, stall_list, email, user_pin)
         time.sleep(1)
+        os.system('clear') #hopefully it clears the OS
         # doing something with the input
-        #print('The user input is: ', user_input)
+        
 
 
 if __name__ == '__main__':
