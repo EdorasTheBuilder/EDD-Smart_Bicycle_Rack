@@ -308,6 +308,14 @@ def start(users, stall_list, email, user_pin):
 
     ######### unlocking            
     elif use == 'U' or use == 'u':
+        print(""" Welcome back! \n
+        To unlock your bicycle, please slide the bar back and remove your bicycle. 
+        Please be polite and slide the bar back in once your bicycle is free!
+        
+
+
+        """)
+
         user_info(email, user_pin, mode=False)
    
         verify = user_verify(users, email, user_pin, stall_list)
