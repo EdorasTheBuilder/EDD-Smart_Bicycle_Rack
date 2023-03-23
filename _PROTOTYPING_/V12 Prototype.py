@@ -46,8 +46,8 @@ for stall in stall_list:
 
 
 
-#functions for servo control {
-
+#random functions
+ 
 def find_index(stall):  #finds the index of the stall dictionary in the stall list, used later to figure out weather or not stall is assigned to a user
     count = 0 
     for i in stall_list:
@@ -56,7 +56,7 @@ def find_index(stall):  #finds the index of the stall dictionary in the stall li
         else:
             count += 1 
    
-
+#functions for servo control
 
 def unlock(stall): #spins a servo to unlock it 
     pin = stall.get('bar_out')
@@ -75,7 +75,7 @@ def unlock(stall): #spins a servo to unlock it
     stall_list[find_index(stall)]['assigned'] = False #changes the value in the dictionary, stall is not assigned to a user
    
 
-def lock(stall):
+def lock(stall): #spins the servo to lock it 
     pin = stall.get('bar_out')
     switch = pi.read(stall.get('switch')) # reads value of limit switch
     complete = False
@@ -98,7 +98,7 @@ def lock(stall):
     stall_list[find_index(stall)]['assigned'] = True #changes the value in the dictionary, stall is  assigned to a user
 
 
-#functions for reading servo values 
+#functions for reading values of a GPIO pin on a raspberry pi 
 
 def rack_read(stall):
     
@@ -118,13 +118,10 @@ def rack_read(stall):
         print('Current lost from cable at stall ' + str(stall.get('name')))
         secure = False
     
-    
+
     else:  
         return secure
 
-
-
-    return secure
     
 
 
@@ -165,7 +162,7 @@ def user_setup_check(email, user_pin):# checks that the users input is valid
 
     prefix = False
     prefix_location = email.find('@')
-    if prefix_location != 0: 
+    if prefix_location != 0 and prefix_location != (len(email) - 1):
         prefix = True
 
     #checks for any spaces 
@@ -176,7 +173,7 @@ def user_setup_check(email, user_pin):# checks that the users input is valid
 
     #checks the users email
     if '@' in email and prefix == True and domain == True and no_spaces == True: 
-        print('Email checks out')
+        print('Valid Email')
         email_check = True
     else: 
         print('Email needs to be an email. Ex: hello@gmail.com')
@@ -262,7 +259,7 @@ def start(users, stall_list, email, user_pin):
         email, user_pin = user_info(email, user_pin)  
 
         email_check, pin_check = user_setup_check(email, user_pin)
-        
+
         while email_check == False or pin_check == False: #checks the users input 
            
             if email_check == False: #adjusts what it asks the user based on if passed the check 
