@@ -262,11 +262,11 @@ def start(users, stall_list, email, user_pin):
         email, user_pin = user_info(email, user_pin)  
 
         email_check, pin_check = user_setup_check(email, user_pin)
-
+        
         while email_check == False or pin_check == False: #checks the users input 
            
             if email_check == False: #adjusts what it asks the user based on if passed the check 
-                email, user_pin = user_info(email, user_pin, user_pass_status=False,) 
+                email, user_pin = user_info(email, user_pin, user_pass_status=False) 
                 email_check, pin_check = user_setup_check(email,user_pin)
             
             if pin_check == False: 
