@@ -2,7 +2,7 @@
 #$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 #imports
-import pigpio
+#import pigpio
 import time
 from threading import Thread
 import os
@@ -30,9 +30,14 @@ users = {}
 
 
 #library setup
-pi = pigpio.pi()
+#pi = pigpio.pi()
 
 #setting modes of pins
+
+
+#UNCOMMENT THIS
+'''
+
 for stall in stall_list: 
     pass
     pi.set_mode(stall.get('cable_in'), pigpio.INPUT)
@@ -40,25 +45,13 @@ for stall in stall_list:
     pi.set_mode(stall.get('bar_in'), pigpio.INPUT)
     pi.set_mode(stall.get('switch'), pigpio.INPUT)
 
+    ''' 
+
 
 #------- functions --------------------------
 #$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
-def admin(): #used for administrative commands 
-    key = input('key')
-   
-    if key != 'Rohan':
-        print('Wrong key!')
-    
-    else:  
-        cmd = input('command')
-        
-        if cmd == 'l': 
-            stall = stall_list[int(input('stall # in list'))]
-            lock(stall)
-        elif cmd == 'u': 
-            stall = stall_list[int(input('stall # in list'))]
-            unlock(stall) 
+
 
 
 #random functions
@@ -75,8 +68,9 @@ def find_index(stall):  #finds the index of the stall dictionary in the stall li
 
 def unlock(stall): #spins a servo to unlock it 
     pin = stall.get('bar_out')
+    print('hello')
 
-    unlock_pos = 500 #servo position as vars so it's easy to tune
+    unlock_pos = 1800 #servo position as vars so it's easy to tune
 
     
     time.sleep(1)
@@ -99,9 +93,10 @@ def lock(stall): #spins the servo to lock it
     
     while complete == False: #checks if locking is complete 
         if switch == 1: #checks if the limit switch is pressed
+            
             lock_pos= 2500
             
-            
+            time.sleep(2)
             pi.set_servo_pulsewidth(pin, lock_pos)
             time.sleep(1)
             pi.set_servo_pulsewidth(pin, 0) #stops the servo 
@@ -151,16 +146,20 @@ def user_info(email, user_pin, email_status = True, user_pass_status=True, mode 
     #set email status or user pass status to false to bypass that check
     #mode is weather or not you are locking or unlocking, true for locking and false for unlocking
 
-   
-    if email_status == True:
+    if mode == True:
+        if email_status == True:
+            email = input('Please enter your email:\n')
+
+        if user_pass_status == True:
+
+            if mode == True:
+                print('Please create a 6 digit numerical pin. \nYou will use this pin to unlock your bike later \n' )   
+
+            user_pin = input('Please enter your pin \n')
+
+    if mode == False: 
         email = input('Please enter your email:\n')
-
-    if user_pass_status == True:
-
-        if mode == True:
-            print('Please create a 6 digit numerical pin. \nYou will use this pin to unlock your bike later \n' )   
-
-        user_pin = input('Please enter your pin \n')
+        user_pin = input('Please enter your pin:\n')
 
 
     return email,user_pin
@@ -223,6 +222,7 @@ def user_setup_check(email, user_pin):# checks that the users input is valid
 
 ##unlock username and pass check 
 def user_verify(user_list, email, user_pin, stall_list):
+    
     if user_list.get(email) != None: #checks the user's email 
         print('Email exists')
         
@@ -243,7 +243,7 @@ def user_verify(user_list, email, user_pin, stall_list):
         print('No email found')
 
 
-    
+  
 
 
 #figures out if the user wants to lock or unlock a bike.
@@ -254,11 +254,10 @@ This is a smart bicycle rack that eliminates your need to carry a lock! It has s
 Are you locking or unlocking your bicycle? 
 Please type "L" for locking or "U" for unlocking. """)
 
-    if use == 'admin': 
-        admin()
+
 
     #locking 
-    elif use == "L" or use == 'l':
+    if use == "L" or use == 'l':
         
         count = 0 #used to figure out weather or not there is a free stall 
         
@@ -287,9 +286,10 @@ Please type "L" for locking or "U" for unlocking. """)
                 email_check, pin_check = user_setup_check(email, user_pin)
         
 
-        users[email] = user_pin # assigns valid user and password to dictionary 
+         
         print('User created: ' + email)
-
+        
+        users[email] = user_pin
 
         #assign a stall 
         
@@ -297,7 +297,7 @@ Please type "L" for locking or "U" for unlocking. """)
         for stall in stall_list:
             if stall.get('assigned') == False:
                 
-                unlock(stall)
+                #unlock(stall)
                 
                 print(""" To lock your bicycle: 
                 1. Slide the metal bar through your frame. 
@@ -311,7 +311,7 @@ Please type "L" for locking or "U" for unlocking. """)
                 print('Please proceede to stall #' + str(stall.get('name')))
 
                 
-                lock(stall)
+                #lock(stall)
                 
                 stall['user'] = email
                 
@@ -329,7 +329,7 @@ Please type "L" for locking or "U" for unlocking. """)
 
         """)
 
-        user_info(email, user_pin, mode=False)
+        email, user_pin = user_info(email, user_pin, mode=False)
    
         verify = user_verify(users, email, user_pin, stall_list)
         
