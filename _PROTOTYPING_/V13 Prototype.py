@@ -2,7 +2,7 @@
 #$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 #imports
-#import pigpio
+import pigpio
 import time
 from threading import Thread
 import os
@@ -30,13 +30,12 @@ users = {}
 
 
 #library setup
-#pi = pigpio.pi()
+pi = pigpio.pi()
 
 #setting modes of pins
 
 
 #UNCOMMENT THIS
-'''
 
 for stall in stall_list: 
     pass
@@ -45,7 +44,7 @@ for stall in stall_list:
     pi.set_mode(stall.get('bar_in'), pigpio.INPUT)
     pi.set_mode(stall.get('switch'), pigpio.INPUT)
 
-    ''' 
+    
 
 
 #------- functions --------------------------
